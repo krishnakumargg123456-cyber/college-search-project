@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Compare Colleges</title>
+    <style>
+        body {font-family: Arial; padding: 20px; background: #f5f5f5;}
+        .container {max-width: 900px; margin: auto; background: white; padding: 20px; border-radius: 8px;}
+        input {padding: 10px; margin: 5px; width: 250px; border: 1px solid #ccc; border-radius: 4px;}
+        button {padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;}
+        button:hover {background: #0056b3;}
+        table {border-collapse: collapse; margin-top: 20px; width: 100%;}
+        th, td {border: 1px solid #ddd; padding: 12px; text-align: left;}
+        th {background: #007bff; color: white;}
+        .error {color: red; font-weight: bold; margin-top: 15px;}
+        h1, h2 {color: #333;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Compare Colleges</h1>
+        
+        <form method="POST">
+            <input type="text" name="college1" placeholder="Enter College 1 name" required>
+            <input type="text" name="college2" placeholder="Enter College 2 name" required>
+            <button type="submit">Compare Now</button>
+        </form>
+
+        {% if error %}
+        <p class="error">{{ error }}</p>
+        {% endif %}
+
+        {% if college1 and college2 %}
+        <h2>Comparison Result</h2>
+        <table>
+            <tr>
+                <th>Feature</th>
+                <th>{{ college1['name'] }}</th>
+                <th>{{ college2['name'] }}</th>
+            </tr>
+            <tr>
+                <td>City</td>
+                <td>{{ college1['city'] if 'city' in college1.keys() else 'N/A' }}</td>
+                <td>{{ college2['city'] if 'city' in college2.keys() else 'N/A' }}</td>
+            </tr>
+            <tr>
+                <td>Fees</td>
+                <td>₹{{ college1['fees'] if 'fees' in college1.keys() else 'N/A' }}</td>
+                <td>₹{{ college2['fees'] if 'fees' in college2.keys() else 'N/A' }}</td>
+            </tr>
+            <tr>
+                <td>Avg Package</td>
+                <td>{{ college1['avg_package'] if 'avg_package' in college1.keys() else 'N/A' }} LPA</td>
+                <td>{{ college2['avg_package'] if 'avg_package' in college2.keys() else 'N/A' }} LPA</td>
+            </tr>
+            <tr>
+                <td>Placement %</td>
+                <td>{{ college1['placement'] if 'placement' in college1.keys() else 'N/A' }}%</td>
+                <td>{{ college2['placement'] if 'placement' in college2.keys() else 'N/A' }}%</td>
+            </tr>
+            <tr>
+                <td>Ranking</td>
+                <td>{{ college1['ranking'] if 'ranking' in college1.keys() else 'N/A' }}</td>
+                <td>{{ college2['ranking'] if 'ranking' in college2.keys() else 'N/A' }}</td>
+            </tr>
+            </tr>
+{% if college1 and college2 %}
+{% if college1['city'] == 'N/A' or college2['city'] == 'N/A' or college1['fees'] == 0 or college2['fees'] == 0 %}
+<tr>
+    <td colspan="3" style="background:#fff3cd; color:#856404; text-align:center; padding:10px; border-radius:5px;">
+        ⚠️ Note: College DB me naya add hua hai. Details 'N/A' ya '0' dikh rahi hain. 
+        <br>Real data update karne ke liye database.db me UPDATE query chalao.
+    </td>
+</tr>
+{% endif %}
+{% endif %}
+</table>
+        </table>
+        {% endif %}
+    </div>
+</body>
+</html>

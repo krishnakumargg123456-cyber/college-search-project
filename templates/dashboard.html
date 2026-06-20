@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panda AI - College Finder AI</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:#0f172a;color:white;min-height:100vh;}
+.bg{position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 20% 20%,rgba(139,92,246,0.3),transparent 50%),radial-gradient(circle at 80% 80%,rgba(236,72,153,0.3),transparent 50%);z-index:0;}
+.navbar{position:sticky;top:0;z-index:100;background:rgba(15,23,42,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.1);}
+.nav-content{max-width:1200px;margin:0 auto;padding:0 5%;}
+.nav-top{display:flex;justify-content:space-between;align-items:center;padding:20px 0;}
+.logo{font-size:24px;font-weight:800;background:linear-gradient(135deg,#60a5fa,#a78bfa);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
+.user-name{color:#94a3b8;font-size:14px;}
+.nav-tabs{display:flex;gap:10px;padding-bottom:20px;overflow-x:auto;flex-wrap:wrap;}
+.tab{padding:12px 20px;background:rgba(30,41,59,0.6);border:1px solid rgba(255,255,255,0.1);border-radius:14px;color:#cbd5e1;font-weight:600;cursor:pointer;transition:all 0.3s;font-size:14px;}
+.tab:hover{background:rgba(139,92,246,0.2);border-color:rgba(139,92,246,0.5);transform:translateY(-2px);}
+.tab.active{background:linear-gradient(135deg,#3b82f6,#8b5cf6);color:white;border-color:transparent;box-shadow:0 8px 25px rgba(139,92,246,0.4);}
+.container{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:40px 5%;}
+.welcome{margin-bottom:40px;text-align:center;}
+.welcome h1{font-size:38px;font-weight:800;margin-bottom:10px;}
+.welcome .name{background:linear-gradient(135deg,#f472b6,#ec4899);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
+.content-area{background:rgba(30,41,59,0.5);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1);border-radius:24px;padding:35px;min-height:500px;}
+.tab-content{display:none;}
+.tab-content.active{display:block;animation:fadeIn 0.4s;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(15px);}to{opacity:1;transform:translateY(0);}}
+.tab-content h2{font-size:28px;margin-bottom:25px;font-weight:700;}
+.input-group{margin-bottom:20px;}
+.input-group label{display:block;margin-bottom:8px;color:#94a3b8;font-size:14px;}
+.input-group input, .input-group select{width:100%;padding:12px 16px;background:rgba(15,23,42,0.8);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:white;font-size:15px;outline:none;}
+.input-group input:focus{border-color:#8b5cf6;}
+.btn{padding:12px 28px;background:linear-gradient(135deg,#3b82f6,#8b5cf6);border:none;border-radius:12px;color:white;font-weight:600;cursor:pointer;font-size:15px;transition:all 0.3s;}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(139,92,246,0.4);}
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:25px;}
+.college-card{background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:20px;}
+.college-card h3{color:#60a5fa;margin-bottom:12px;}
+.college-card p{margin:8px 0;color:#cbd5e1;font-size:14px;}
+.result-box{margin-top:25px;padding:20px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);border-radius:16px;}
+.result-box.bad{background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.3);}
+.college-list{display:grid;gap:15px;margin-top:20px;max-height:600px;overflow-y:auto;}
+.college-item{background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:18px;transition:all 0.3s;}
+.college-item:hover{border-color:#8b5cf6;transform:translateX(5px);}
+.college-item h3{color:#60a5fa;margin-bottom:8px;font-size:16px;}
+.badge{display:inline-block;padding:4px 10px;background:rgba(139,92,246,0.2);border-radius:8px;font-size:12px;margin-right:8px;margin-top:8px;}
+.no-result{color:#fbbf24;text-align:center;padding:30px;font-size:16px;}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+
+<nav class="navbar">
+    <div class="nav-content">
+        <div class="nav-top">
+            <div class="logo" style="display:flex; align-items:center; gap:10px;">
+    <svg width="35" height="35" viewBox="0 0 100 100" style="filter:drop-shadow(0 0 10px #8b5cf6);">
+        <defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#60a5fa;stop-opacity:1" /><stop offset="100%" style="stop-color:#a78bfa;stop-opacity:1" /></linearGradient></defs>
+        <circle cx="50" cy="50" r="40" fill="url(#grad)" stroke="white" stroke-width="2"/>
+        <circle cx="25" cy="20" r="15" fill="white"/><circle cx="25" cy="20" r="10" fill="#0f172a"/>
+        <circle cx="75" cy="20" r="15" fill="white"/><circle cx="75" cy="20" r="10" fill="#0f172a"/>
+        <ellipse cx="35" cy="45" rx="12" ry="15" fill="#0f172a" transform="rotate(-20 35 45)"/>
+        <ellipse cx="65" cy="45" rx="12" ry="15" fill="#0f172a" transform="rotate(20 65 45)"/>
+        <circle cx="35" cy="45" r="4" fill="white"/><circle cx="65" cy="45" r="4" fill="white"/>
+        <ellipse cx="50" cy="58" rx="4" ry="3" fill="#0f172a"/>
+    </svg>
+    <span style="background:linear-gradient(135deg,#60a5fa,#a78bfa);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-weight:800;">Panda AI</span>
+</div>
+            <div class="user-name">Hi, {{ user.name }}</div>
+        </div>
+        <div class="nav-tabs">
+            <button class="tab active" onclick="showTab('recommend')">🎯 Recommended</button>
+            <button class="tab" onclick="showTab('predictor')">📊 Predictor</button>
+            <button class="tab" onclick="showTab('compare')">⚖️ Compare</button>
+            <button class="tab" onclick="showTab('scholarships')">💰 Scholarships</button>
+            <button class="tab" onclick="showTab('saved')">❤️ Saved</button>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="welcome">
+        <h1>Welcome <span class="name">{{ user.name }}</span> 👋</h1>
+    </div>
+    
+    <div class="content-area">
+        <div id="recommend" class="tab-content active">
+            <h2>🎯 College Recommendations - 150+ All India Colleges</h2>
+            <div class="input-group">
+                <label>12th % / JEE Main Rank</label>
+                <input type="number" id="rec_marks" placeholder="Enter 78 or 50000">
+            </div>
+            <div class="input-group">
+                <label>Preferred Branch</label>
+                <select id="rec_branch">
+                    <option>CSE</option>
+                    <option>ECE</option>
+                    <option>Mechanical</option>
+                    <option>Civil</option>
+                    <option>IT</option>
+                    <option>AIML</option>
+                    <option>EEE</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Budget per Year (INR)</label>
+                <input type="number" id="rec_budget" placeholder="300000">
+            </div>
+            <button class="btn" onclick="getRecommendation()">Find Colleges</button>
+            <div id="rec_result" class="college-list"></div>
+        </div>
+        
+        <div id="predictor" class="tab-content">
+            <h2>📊 Admission Predictor</h2>
+            <div class="input-group">
+                <label>Your Marks % / JEE Rank</label>
+                <input type="number" id="pred_marks" placeholder="Enter your marks">
+            </div>
+            <div class="input-group">
+                <label>College Name</label>
+                <input type="text" id="pred_college" placeholder="IIT Delhi / NIT Trichy / VIT">
+            </div>
+            <div class="input-group">
+                <label>Branch</label>
+                <select id="pred_branch">
+                    <option>CSE</option>
+                    <option>ECE</option>
+                    <option>Mechanical</option>
+                    <option>Civil</option>
+                </select>
+            </div>
+            <button class="btn" onclick="predictAdmission()">Check Admission Chances</button>
+            <div id="pred_result"></div>
+        </div>
+        
+        <div id="compare" class="tab-content">
+            <h2>⚖️ Compare Any 2 Colleges - All India Database</h2>
+            <div class="input-group">
+                <label>College 1 Name</label>
+                <input type="text" id="comp1" placeholder="Type any college name">
+            </div>
+            <div class="input-group">
+                <label>College 2 Name</label>
+                <input type="text" id="comp2" placeholder="Type any college name">
+            </div>
+            <button class="btn" onclick="compareColleges()">Compare Now</button>
+            <div id="comp_result" class="compare-grid"></div>
+        </div>
+        
+        <div id="scholarships" class="tab-content">
+            <h2>💰 Scholarship Eligibility Checker</h2>
+            <div class="input-group">
+                <label>Annual Family Income (INR)</label>
+                <input type="number" id="sch_income" placeholder="500000">
+            </div>
+            <div class="input-group">
+                <label>Your 12th Marks %</label>
+                <input type="number" id="sch_marks" placeholder="88">
+            </div>
+            <div class="input-group">
+                <label>Category</label>
+                <select id="sch_category">
+                    <option>General</option>
+                    <option>OBC</option>
+                    <option>SC</option>
+                    <option>ST</option>
+                    <option>EWS</option>
+                </select>
+            </div>
+            <button class="btn" onclick="checkScholarship()">Check Eligible Scholarships</button>
+            <div id="sch_result" class="college-list"></div>
+        </div>
+        
+        <div id="saved" class="tab-content">
+            <h2>❤️ Saved Colleges</h2>
+            <p>No colleges saved yet. Save colleges from Recommendations tab.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+function showTab(tabName) {
+    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+    document.getElementById(tabName).classList.add('active');
+    event.target.classList.add('active');
+}
+
+// 150+ Real All India Colleges Database
+const colleges = [
+    // IITs - 23
+    {name:"IIT Bombay", branch:"CSE", cutoff:99, fees:3, placement:25, location:"Mumbai", type:"IIT"},
+    {name:"IIT Delhi", branch:"CSE", cutoff:98, fees:2.8, placement:23, location:"Delhi", type:"IIT"},
+    {name:"IIT Madras", branch:"CSE", cutoff:97, fees:2.5, placement:22, location:"Chennai", type:"IIT"},
+    {name:"IIT Kanpur", branch:"CSE", cutoff:96, fees:2.4, placement:21, location:"Kanpur", type:"IIT"},
+    {name:"IIT Kharagpur", branch:"CSE", cutoff:95, fees:2.3, placement:20, location:"Kharagpur", type:"IIT"},
+    {name:"IIT Roorkee", branch:"CSE", cutoff:94, fees:2.3, placement:19, location:"Roorkee", type:"IIT"},
+    {name:"IIT Guwahati", branch:"CSE", cutoff:93, fees:2.3, placement:18, location:"Guwahati", type:"IIT"},
+    {name:"IIT Hyderabad", branch:"CSE", cutoff:92, fees:2.4, placement:18, location:"Hyderabad", type:"IIT"},
+    {name:"IIT BHU", branch:"CSE", cutoff:91, fees:2.2, placement:17, location:"Varanasi", type:"IIT"},
+    {name:"IIT Indore", branch:"CSE", cutoff:90, fees:2.3, placement:17, location:"Indore", type:"IIT"},
+    {name:"IIT Patna", branch:"CSE", cutoff:89, fees:2.2, placement:16, location:"Patna", type:"IIT"},
+    {name:"IIT Bhubaneswar", branch:"CSE", cutoff:88, fees:2.2, placement:15, location:"Bhubaneswar", type:"IIT"},
+    {name:"IIT Gandhinagar", branch:"CSE", cutoff:87, fees:2.2, placement:15, location:"Gandhinagar", type:"IIT"},
+    {name:"IIT Ropar", branch:"CSE", cutoff:86, fees:2.2, placement:14, location:"Ropar", type:"IIT"},
+    {name:"IIT Mandi", branch:"CSE", cutoff:85, fees:2.2, placement:14, location:"Mandi", type:"IIT"},
+    {name:"IIT Jodhpur", branch:"CSE", cutoff:84, fees:2.2, placement:13, location:"Jodhpur", type:"IIT"},
+    {name:"IIT Palakkad", branch:"CSE", cutoff:83, fees:2.2, placement:13, location:"Palakkad", type:"IIT"},
+    {name:"IIT Tirupati", branch:"CSE", cutoff:82, fees:2.2, placement:12, location:"Tirupati", type:"IIT"},
+    {name:"IIT Dharwad", branch:"CSE", cutoff:81, fees:2.2, placement:12, location:"Dharwad", type:"IIT"},
+    {name:"IIT Bhilai", branch:"CSE", cutoff:80, fees:2.2, placement:11, location:"Bhilai", type:"IIT"},
+    {name:"IIT Goa", branch:"CSE", cutoff:79, fees:2.2, placement:11, location:"Goa", type:"IIT"},
+    {name:"IIT Jammu", branch:"CSE", cutoff:78, fees:2.2, placement:10, location:"Jammu", type:"IIT"},
+    {name:"IIT Dhanbad", branch:"CSE", cutoff:77, fees:2.2, placement:10, location:"Dhanbad", type:"IIT"},
+    
+    // NITs - 31
+    {name:"NIT Trichy", branch:"CSE", cutoff:94, fees:1.5, placement:18, location:"Trichy", type:"NIT"},
+    {name:"NIT Surathkal", branch:"CSE", cutoff:93, fees:1.4, placement:17, location:"Karnataka", type:"NIT"},
+    {name:"NIT Warangal", branch:"CSE", cutoff:92, fees:1.3, placement:16, location:"Warangal", type:"NIT"},
+    {name:"NIT Rourkela", branch:"CSE", cutoff:91, fees:1.4, placement:15, location:"Rourkela", type:"NIT"},
+    {name:"NIT Kurukshetra", branch:"CSE", cutoff:90, fees:1.3, placement:14, location:"Kurukshetra", type:"NIT"},
+    {name:"NIT Durgapur", branch:"CSE", cutoff:89, fees:1.2, placement:13, location:"Durgapur", type:"NIT"},
+    {name:"NIT Silchar", branch:"CSE", cutoff:88, fees:1.2, placement:12, location:"Silchar", type:"NIT"},
+    {name:"NIT Hamirpur", branch:"CSE", cutoff:87, fees:1.2, placement:12, location:"Hamirpur", type:"NIT"},
+    {name:"NIT Nagpur", branch:"CSE", cutoff:86, fees:1.3, placement:13, location:"Nagpur", type:"NIT"},
+    {name:"NIT Calicut", branch:"CSE", cutoff:85, fees:1.3, placement:13, location:"Calicut", type:"NIT"},
+    {name:"NIT Jaipur", branch:"CSE", cutoff:84, fees:1.3, placement:12, location:"Jaipur", type:"NIT"},
+    {name:"NIT Bhopal", branch:"CSE", cutoff:83, fees:1.2, placement:11, location:"Bhopal", type:"NIT"},
+    {name:"NIT Allahabad", branch:"CSE", cutoff:82, fees:1.3, placement:12, location:"Prayagraj", type:"NIT"},
+    {name:"NIT Jalandhar", branch:"CSE", cutoff:81, fees:1.2, placement:11, location:"Jalandhar", type:"NIT"},
+    {name:"NIT Jamshedpur", branch:"CSE", cutoff:80, fees:1.2, placement:10, location:"Jamshedpur", type:"NIT"},
+    {name:"NIT Raipur", branch:"CSE", cutoff:79, fees:1.2, placement:10, location:"Raipur", type:"NIT"},
+    {name:"NIT Goa", branch:"CSE", cutoff:78, fees:1.2, placement:9, location:"Goa", type:"NIT"},
+    {name:"NIT Mizoram", branch:"CSE", cutoff:75, fees:1.2, placement:8, location:"Mizoram", type:"NIT"},
+    {name:"NIT Manipur", branch:"CSE", cutoff:74, fees:1.2, placement:8, location:"Manipur", type:"NIT"},
+    {name:"NIT Meghalaya", branch:"CSE", cutoff:73, fees:1.2, placement:8, location:"Shillong", type:"NIT"},
+    {name:"NIT Nagaland", branch:"CSE", cutoff:72, fees:1.2, placement:7, location:"Nagaland", type:"NIT"},
+    {name:"NIT Arunachal", branch:"CSE", cutoff:71, fees:1.2, placement:7, location:"Arunachal", type:"NIT"},
+    {name:"NIT Sikkim", branch:"CSE", cutoff:70, fees:1.2, placement:7, location:"Sikkim", type:"NIT"},
+    {name:"NIT Uttarakhand", branch:"CSE", cutoff:69, fees:1.2, placement:6, location:"Uttarakhand", type:"NIT"},
+    {name:"NIT Delhi", branch:"CSE", cutoff:80, fees:1.5, placement:11, location:"Delhi", type:"NIT"},
+    {name:"NIT Andhra Pradesh", branch:"CSE", cutoff:68, fees:1.2, placement:6, location:"AP", type:"NIT"},
+    {name:"NIT Puducherry", branch:"CSE", cutoff:67, fees:1.2, placement:6, location:"Puducherry", type:"NIT"},
+    {name:"NIT Srinagar", branch:"CSE", cutoff:66, fees:1.2, placement:6, location:"Srinagar", type:"NIT"},
+    {name:"NIT Agartala", branch:"CSE", cutoff:65, fees:1.2, placement:5, location:"Agartala", type:"NIT"},
+    {name:"NIT Patna", branch:"CSE", cutoff:78, fees:1.2, placement:9, location:"Patna", type:"NIT"},
+    {name:"NIT Surat", branch:"CSE", cutoff:83, fees:1.2, placement:11, location:"Surat", type:"NIT"},
+    
+    // IIITs - 25
+    {name:"IIIT Hyderabad", branch:"CSE", cutoff:93, fees:3, placement:19, location:"Hyderabad", type:"IIIT"},
+    {name:"IIIT Delhi", branch:"CSE", cutoff:91, fees:2.5, placement:17, location:"Delhi", type:"IIIT"},
+    {name:"IIIT Bangalore", branch:"CSE", cutoff:89, fees:2.8, placement:16, location:"Bangalore", type:"IIIT"},
+    {name:"IIIT Allahabad", branch:"CSE", cutoff:88, fees:2.2, placement:15, location:"Prayagraj", type:"IIIT"},
+    {name:"IIIT Gwalior", branch:"CSE", cutoff:87, fees:2, placement:14, location:"Gwalior", type:"IIIT"},
+    {name:"IIIT Jabalpur", branch:"CSE", cutoff:86, fees:1.8, placement:13, location:"Jabalpur", type:"IIIT"},
+    {name:"IIIT Kanchipuram", branch:"CSE", cutoff:85, fees:2, placement:12, location:"Chennai", type:"IIIT"},
+    {name:"IIIT Lucknow", branch:"CSE", cutoff:84, fees:2, placement:12, location:"Lucknow", type:"IIIT"},
+    {name:"IIIT Guwahati", branch:"CSE", cutoff:83, fees:1.9, placement:11, location:"Guwahati", type:"IIIT"},
+    {name:"IIIT Kalyani", branch:"CSE", cutoff:82, fees:1.8, placement:10, location:"Kalyani", type:"IIIT"},
+    {name:"IIIT Sonepat", branch:"CSE", cutoff:81, fees:1.8, placement:10, location:"Sonepat", type:"IIIT"},
+    {name:"IIIT Una", branch:"CSE", cutoff:80, fees:1.7, placement:9, location:"Una", type:"IIIT"},
+    {name:"IIIT Vadodara", branch:"CSE", cutoff:79, fees:1.8, placement:9, location:"Vadodara", type:"IIIT"},
+    {name:"IIIT Manipur", branch:"CSE", cutoff:75, fees:1.7, placement:8, location:"Manipur", type:"IIIT"},
+    {name:"IIIT Nagpur", branch:"CSE", cutoff:78, fees:1.8, placement:8, location:"Nagpur", type:"IIIT"},
+    {name:"IIIT Ranchi", branch:"CSE", cutoff:77, fees:1.7, placement:8, location:"Ranchi", type:"IIIT"},
+    {name:"IIIT Bhopal", branch:"CSE", cutoff:76, fees:1.8, placement:8, location:"Bhopal", type:"IIIT"},
+    {name:"IIIT Pune", branch:"CSE", cutoff:83, fees:1.9, placement:11, location:"Pune", type:"IIIT"},
+    {name:"IIIT Dharwad", branch:"CSE", cutoff:74, fees:1.7, placement:7, location:"Dharwad", type:"IIIT"},
+    {name:"IIIT Kottayam", branch:"CSE", cutoff:73, fees:1.7, placement:7, location:"Kottayam", type:"IIIT"},
+    {name:"IIIT Tiruchirappalli", branch:"CSE", cutoff:80, fees:1.8, placement:9, location:"Trichy", type:"IIIT"},
+    {name:"IIIT Surat", branch:"CSE", cutoff:72, fees:1.7, placement:7, location:"Surat", type:"IIIT"},
+    {name:"IIIT Bhagalpur", branch:"CSE", cutoff:71, fees:1.7, placement:6, location:"Bhagalpur", type:"IIIT"},
+    {name:"IIIT Raichur", branch:"CSE", cutoff:70, fees:1.7, placement:6, location:"Raichur", type:"IIIT"},
+    {name:"IIIT Agartala", branch:"CSE", cutoff:69, fees:1.7, placement:6, location:"Agartala", type:"IIIT"},
+    
+    // GFTIs - 18
+    {name:"PEC Chandigarh", branch:"CSE", cutoff:88, fees:1.2, placement:14, location:"Chandigarh", type:"GFTI"},
+    {name:"DTU Delhi", branch:"CSE", cutoff:91, fees:1.2, placement:16, location:"Delhi", type:"GFTI"},
+    {name:"NSUT Delhi", branch:"CSE", cutoff:90, fees:1.1, placement:15, location:"Delhi", type:"GFTI"},
+    {name:"Thapar Patiala", branch:"CSE", cutoff:88, fees:2.5, placement:13, location:"Patiala", type:"GFTI"},
+    {name:"NITTE Surathkal", branch:"CSE", cutoff:82, fees:2, placement:10, location:"Mangalore", type:"GFTI"},
+    {name:"SGSITS Indore", branch:"CSE", cutoff:78, fees:0.8, placement:8, location:"Indore", type:"GFTI"},
+    {name:"BIT Mesra", branch:"CSE", cutoff:86, fees:2.2, placement:12, location:"Ranchi", type:"GFTI"},
+    {name:"CoEP Pune", branch:"CSE", cutoff:87, fees:1, placement:12, location:"Pune", type:"GFTI"},
+    {name:"VJTI Mumbai", branch:"CSE", cutoff:89, fees:1, placement:13, location:"Mumbai", type:"GFTI"},
+    {name:"SPIT Mumbai", branch:"CSE", cutoff:85, fees:1.2, placement:11, location:"Mumbai", type:"GFTI"},
+    {name:"PES Bangalore", branch:"CSE", cutoff:84, fees:2.5, placement:12, location:"Bangalore", type:"GFTI"},
+    {name:"MS Ramaiah", branch:"CSE", cutoff:82, fees:2.3, placement:10, location:"Bangalore", type:"GFTI"},
+    {name:"PSG Coimbatore", branch:"CSE", cutoff:83, fees:1.5, placement:11, location:"Coimbatore", type:"GFTI"},
+    {name:"SSN Chennai", branch:"CSE", cutoff:84, fees:2, placement:12, location:"Chennai", type:"GFTI"},
+    {name:"RV Bangalore", branch:"CSE", cutoff:83, fees:2.4, placement:11, location:"Bangalore", type:"GFTI"},
+    {name:"BMS Bangalore", branch:"CSE", cutoff:81, fees:2.2, placement:10, location:"Bangalore", type:"GFTI"},
+    {name:"JSS Noida", branch:"CSE", cutoff:79, fees:1.3, placement:9, location:"Noida", type:"GFTI"},
+    {name:"AKG Ghaziabad", branch:"CSE", cutoff:77, fees:1.2, placement:8, location:"Ghaziabad", type:"GFTI"},
+    
+    // Top Private - 60+
+    {name:"VIT Vellore", branch:"CSE", cutoff:90, fees:3.5, placement:15, location:"Vellore", type:"Private"},
+    {name:"SRM Chennai", branch:"CSE", cutoff:85, fees:3, placement:12, location:"Chennai", type:"Private"},
+    {name:"BITS Pilani", branch:"CSE", cutoff:96, fees:4.5, placement:20, location:"Pilani", type:"Private"},
+    {name:"Manipal", branch:"CSE", cutoff:82, fees:3.2, placement:14, location:"Manipal", type:"Private"},
+    {name:"LPU Punjab", branch:"CSE", cutoff:70, fees:2, placement:10, location:"Punjab", type:"Private"},
+    {name:"Chandigarh University", branch:"CSE", cutoff:72, fees:1.8, placement:11, location:"Chandigarh", type:"Private"},
+    {name:"Amity Noida", branch:"CSE", cutoff:75, fees:2.5, placement:8, location:"Noida", type:"Private"},
+    {name:"Bennett University", branch:"CSE", cutoff:78, fees:2.8, placement:12, location:"Greater Noida", type:"Private"},
+    {name:"UPES Dehradun", branch:"CSE", cutoff:76, fees:2.8, placement:10, location:"Dehradun", type:"Private"},
+    {name:"Symbiosis Pune", branch:"CSE", cutoff:80, fees:3, placement:11, location:"Pune", type:"Private"},
+    {name:"Shiv Nadar", branch:"CSE", cutoff:82, fees:3.5, placement:13, location:"Greater Noida", type:"Private"},
+    {name:"Ashoka University", branch:"CSE", cutoff:83, fees:4, placement:12, location:"Sonepat", type:"Private"},
+    {name:"Krea University", branch:"CSE", cutoff:78, fees:3.5, placement:10, location:"Sri City", type:"Private"},
+    {name:"JK Lakshmipat", branch:"CSE", cutoff:74, fees:2, placement:8, location:"Jaipur", type:"Private"},
+    {name:"LNMIIT Jaipur", branch:"CSE", cutoff:83, fees:2.2, placement:12, location:"Jaipur", type:"Private"},
+    {name:"IIIT Bhubaneswar", branch:"CSE", cutoff:79, fees:1.8, placement:9, location:"Bhubaneswar", type:"Private"},
+    {name:"KIIT Bhubaneswar", branch:"CSE", cutoff:77, fees:2.5, placement:10, location:"Bhubaneswar", type:"Private"},
+    {name:"SOA Bhubaneswar", branch:"CSE", cutoff:75, fees:2.2, placement:9, location:"Bhubaneswar", type:"Private"},
+    {name:"GLA Mathura", branch:"CSE", cutoff:73, fees:1.5, placement:7, location:"Mathura", type:"Private"},
+    {name:"Amrita Coimbatore", branch:"CSE", cutoff:84, fees:2.8, placement:12, location:"Coimbatore", type:"Private"},
+    {name:"MIT WPU Pune", branch:"CSE", cutoff:78, fees:2.5, placement:10, location:"Pune", type:"Private"},
+    {name:"DY Patil Pune", branch:"CSE", cutoff:76, fees:2.2, placement:9, location:"Pune", type:"Private"},
+    {name:"Sinhgad Pune", branch:"CSE", cutoff:74, fees:1.8, placement:8, location:"Pune", type:"Private"},
+    {name:"BVP Pune", branch:"CSE", cutoff:75, fees:2, placement:8, location:"Pune", type:"Private"},
+    {name:"MGM Aurangabad", branch:"CSE", cutoff:72, fees:1.6, placement:7, location:"Aurangabad", type:"Private"},
+    {name:"GITAM Vizag", branch:"CSE", cutoff:74, fees:2.2, placement:8, location:"Visakhapatnam", type:"Private"},
+    {name:"SASTRA Thanjavur", branch:"CSE", cutoff:81, fees:2, placement:10, location:"Thanjavur", type:"Private"},
+    {name:"SRM AP", branch:"CSE", cutoff:78, fees:2.5, placement:9, location:"AP", type:"Private"},
+    {name:"VIT AP", branch:"CSE", cutoff:82, fees:3, placement:11, location:"AP", type:"Private"},
+    {name:"KIET Ghaziabad", branch:"CSE", cutoff:76, fees:1.3, placement:8, location:"Ghaziabad", type:"Private"},
+    {name:"ABES Ghaziabad", branch:"CSE", cutoff:74, fees:1.2, placement:7, location:"Ghaziabad", type:"Private"},
+    {name:"IMS Ghaziabad", branch:"CSE", cutoff:72, fees:1.1, placement:6, location:"Ghaziabad", type:"Private"},
+    {name:"HBTU Kanpur", branch:"CSE", cutoff:80, fees:0.9, placement:9, location:"Kanpur", type:"GFTI"},
+    {name:"JUIT Waknaghat", branch:"CSE", cutoff:75, fees:2.2, placement:8, location:"Himachal", type:"Private"},
+    {name:"Jaypee Noida", branch:"CSE", cutoff:77, fees:2.5, placement:9, location:"Noida", type:"Private"},
+    {name:"Galgotias Noida", branch:"CSE", cutoff:71, fees:1.8, placement:6, location:"Noida", type:"Private"},
+    {name:"Sharda Greater Noida", branch:"CSE", cutoff:70, fees:2, placement:7, location:"Greater Noida", type:"Private"},
+    {name:"NIIT Neemrana", branch:"CSE", cutoff:73, fees:2.2, placement:8, location:"Rajasthan", type:"Private"},
+    {name:"BML Munjal", branch:"CSE", cutoff:76, fees:2.8, placement:9, location:"Gurgaon", type:"Private"},
+    {name:"KRMU Gurgaon", branch:"CSE", cutoff:71, fees:1.8, placement:6, location:"Gurgaon", type:"Private"},
+    {name:"Apeejay Stya", branch:"CSE", cutoff:70, fees:1.7, placement:6, location:"Gurgaon", type:"Private"},
+    {name:"ITM Gwalior", branch:"CSE", cutoff:69, fees:1.5, placement:5, location:"Gwalior", type:"Private"},
+    {name:"Oriental Bhopal", branch:"CSE", cutoff:68, fees:1.2, placement:5, location:"Bhopal", type:"Private"},
+    {name:"Lakshmi Narain Bhopal", branch:"CSE", cutoff:67, fees:1.1, placement:5, location:"Bhopal", type:"Private"},
+    {name:"SAGE Bhopal", branch:"CSE", cutoff:66, fees:1.2, placement:5, location:"Bhopal", type:"Private"},
+    {name:"IPS Indore", branch:"CSE", cutoff:65, fees:1, placement:4, location:"Indore", type:"Private"},
+    {name:"Acropolis Indore", branch:"CSE", cutoff:64, fees:0.9, placement:4, location:"Indore", type:"Private"},
+    {name:"Chameli Devi Indore", branch:"CSE", cutoff:63, fees:0.9, placement:4, location:"Indore", type:"Private"},
+    {name:"SVITS Indore", branch:"CSE", cutoff:62, fees:0.8, placement:3, location:"Indore", type:"Private"},
+    {name:"MIT Pune", branch:"CSE", cutoff:79, fees:2.4, placement:9, location:"Pune", type:"Private"},
+    {name:"PCCOE Pune", branch:"CSE", cutoff:78, fees:2.2, placement:8, location:"Pune", type:"Private"},
+    {name:"MITCOE Pune", branch:"CSE", cutoff:77, fees:2, placement:8, location:"Pune", type:"Private"},
+    {name:"VIT Pune", branch:"CSE", cutoff:76, fees:2.5, placement:8, location:"Pune", type:"Private"},
+    {name:"MITADT Pune", branch:"CSE", cutoff:75, fees:2.2, placement:7, location:"Pune", type:"Private"},
+    {name:"MITWPU Pune", branch:"CSE", cutoff:74, fees:2, placement:7, location:"Pune", type:"Private"},
+];
+
+
+function getRecommendation() {
+    let marks = parseFloat(document.getElementById('rec_marks').value) || 0;
+    let branch = document.getElementById('rec_branch').value;
+    let budget = parseFloat(document.getElementById('rec_budget').value) || 999;
+    
+    let score = marks > 1000 ? 100 - (marks/1000) : marks;
+    
+    let result = colleges.filter(c => 
+        c.branch === branch && 
+        c.cutoff <= score + 10 && 
+        c.fees * 100000 <= budget
+    );
+    
+    if(result.length === 0) {
+        result = colleges.filter(c => c.branch === branch)
+                         .sort((a,b) => a.fees - b.fees)
+                         .slice(0, 10);
+    }
+    
+    let html = result.map(c => `
+        <div class="college-item">
+            <h3>${c.name} - ${c.location}</h3>
+            <span class="badge">Branch: ${c.branch}</span>
+            <span class="badge">Cutoff: ${c.cutoff}%</span>
+            <span class="badge">Fees: ₹${c.fees} Lakh/Year</span>
+            <span class="badge">Placement: ${c.placement} LPA</span>
+        </div>
+    `).join('');
+    
+    document.getElementById('rec_result').innerHTML = html;
+}
+
+function predictAdmission() {
+    let marks = parseFloat(document.getElementById('pred_marks').value) || 0;
+    let college = document.getElementById('pred_college').value;
+    let col = colleges.find(c => c.name.toLowerCase().includes(college.toLowerCase())) || {cutoff:90, name:"College"};
+    let diff = marks - col.cutoff;
+    let chance = diff >= 5 ? 90 : diff >= 0 ? 70 : diff >= -5 ? 45 : 20;
+    let cls = chance > 60 ? '' : 'bad';
+    let msg = chance > 60 ? 'High chances! You can get admission.' : chance > 40 ? 'Moderate chances.' : 'Low chances. Try backup options.';
+    
+    document.getElementById('pred_result').innerHTML = `
+        <div class="result-box ${cls}">
+            <h3>Admission Chances: ${chance}%</h3>
+            <p>${msg}</p>
+            <p><b>Required Cutoff for ${col.name}:</b> ${col.cutoff}%</p>
+        </div>
+    `;
+}
+
+function compareColleges() {
+    let c1 = document.getElementById('comp1').value.toLowerCase();
+    let c2 = document.getElementById('comp2').value.toLowerCase();
+    let col1 = colleges.find(c => c.name.toLowerCase().includes(c1)) || colleges[0];
+    let col2 = colleges.find(c => c.name.toLowerCase().includes(c2)) || colleges[1];
+    document.getElementById('comp_result').innerHTML = `
+        <div class="college-card">
+            <h3>${col1.name}</h3>
+            <p><b>Location:</b> ${col1.location}</p>
+            <p><b>Fees:</b> ₹${col1.fees} Lakh/Year</p>
+            <p><b>Placement:</b> ${col1.placement} LPA</p>
+        </div>
+        <div class="college-card">
+            <h3>${col2.name}</h3>
+            <p><b>Location:</b> ${col2.location}</p>
+            <p><b>Fees:</b> ₹${col2.fees} Lakh/Year</p>
+            <p><b>Placement:</b> ${col2.placement} LPA</p>
+        </div>
+    `;
+}
+
+function checkScholarship() {
+    let income = parseFloat(document.getElementById('sch_income').value) || 999;
+    let marks = parseFloat(document.getElementById('sch_marks').value) || 0;
+    let cat = document.getElementById('sch_category').value;
+    
+    let scholarships = [];
+    if(income < 800000 && marks >= 75) {
+        scholarships.push({name:"NSP Central Sector Scholarship", amount:"₹12,000 per year", eligibility:"Income < 8 Lakh, Marks > 75%"});
+    }
+    if(cat !== 'General' && income < 450000) {
+        scholarships.push({name:"Post Matric Scholarship", amount:"Full Tuition Fees", eligibility:"SC/ST/OBC, Income < 4.5 Lakh"});
+    }
+    
+    let html = scholarships.length ? scholarships.map(s => `
+        <div class="college-item">
+            <h3>✅ ${s.name}</h3>
+            <p><b>Amount:</b> ${s.amount}</p>
+            <p><b>Eligibility:</b> ${s.eligibility}</p>
+        </div>
+    `).join('') : '<div class="no-result">No scholarships found for your profile.</div>';
+    
+    document.getElementById('sch_result').innerHTML = html;
+}
+</script>
+<footer style="text-align:center; padding:30px; margin-top:50px; border-top:1px solid rgba(255,255,255,0.1); color:#94a3b8; font-size:14px;">
+    <div style="font-size:20px;margin-bottom:5px;">🐼</div>
+    Made with ❤️ by <b style="background:linear-gradient(135deg,#60a5fa,#a78bfa);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">Kishu</b> | Panda AI v1.0 | 2026
+</footer>
+</body>
+</html>

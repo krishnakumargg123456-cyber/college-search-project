@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admission Predictor</title>
+</head>
+<body>
+    <h1>Admission Predictor</h1>
+    
+    <form method="POST" action="/predictor">
+        <label>12th Marks %: </label>
+        <input type="number" name="marks" min="0" max="100" required><br><br>
+        
+        <label>Category: </label>
+        <select name="category" required>
+            <option value="General">General</option>
+            <option value="OBC">OBC</option>
+            <option value="SC">SC</option>
+            <option value="ST">ST</option>
+            <option value="EWS">EWS</option>
+        </select><br><br>
+        
+        <label>Course: </label>
+        <input type="text" name="course" placeholder="B.Tech / MBBS / BBA" required><br><br>
+        
+        <button type="submit">Predict now</button>
+    </form>
+
+    {% if result %}
+    <hr>
+    <h3>Result: {{ result }}</h3>
+    {% endif %}
+
+    <br><a href="/dashboard">← Back to Dashboard</a>
+</body>
+</html>

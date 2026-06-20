@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Premium Scholarships 2026</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        color: #f1f5f9;
+        min-height: 100vh;
+        padding: 40px 20px;
+    }
+
+   .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    h1 {
+        text-align: center;
+        font-size: 3rem;
+        margin-bottom: 10px;
+        background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+   .subtitle {
+        text-align: center;
+        color: #94a3b8;
+        margin-bottom: 40px;
+        font-size: 1.1rem;
+    }
+
+    /* Filters - Premium Glass Effect */
+   .filters {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-bottom: 50px;
+        padding: 25px;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+   .filters input,.filters select {
+        padding: 14px 20px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+        color: white;
+        font-size: 1rem;
+        outline: none;
+        transition: all 0.3s;
+        min-width: 200px;
+    }
+
+   .filters input:focus,.filters select:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+        background: rgba(255, 255, 255, 0.12);
+    }
+
+   .filters select option {
+        background: #1e293b;
+        color: white;
+        padding: 10px;
+    }
+
+   .filters button {
+        padding: 14px 35px;
+        background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+        border: none;
+        border-radius: 12px;
+        color: white;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+    }
+
+   .filters button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 25px rgba(59, 130, 246, 0.6);
+    }
+
+    /* Grid Layout */
+   .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 30px;
+    }
+
+    /* Premium Card */
+   .card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 30px;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        overflow: hidden;
+    }
+
+   .card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
+        transform: scaleX(0);
+        transition: transform 0.4s;
+    }
+
+   .card:hover::before {
+        transform: scaleX(1);
+    }
+
+   .card:hover {
+        transform: translateY(-10px);
+        border-color: rgba(59, 130, 246, 0.5);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+
+   .tag {
+        display: inline-block;
+        padding: 6px 14px;
+        background: rgba(59, 130, 246, 0.2);
+        border: 1px solid rgba(59, 130, 246, 0.4);
+        border-radius: 20px;
+        font-size: 0.85rem;
+        color: #60a5fa;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+   .card-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+   .logo {
+        font-size: 2.5rem;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(59, 130, 246, 0.15);
+        border-radius: 15px;
+    }
+
+   .card h3 {
+        font-size: 1.4rem;
+        color: #f8fafc;
+        line-height: 1.3;
+    }
+
+   .info-row {
+        margin: 12px 0;
+        color: #cbd5e1;
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+   .info-row b {
+        color: #e2e8f0;
+    }
+
+   .amount {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin: 20px 0;
+        background: linear-gradient(90deg, #10b981, #34d399);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+   .deadline {
+        color: #fbbf24;
+        font-weight: 600;
+        margin: 15px 0;
+        font-size: 0.95rem;
+    }
+
+   .btn {
+        display: inline-block;
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 12px;
+        font-weight: 600;
+        margin-top: 20px;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+    }
+
+   .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 25px rgba(37, 99, 235, 0.5);
+    }
+
+   .no-data {
+        text-align: center;
+        padding: 80px 20px;
+        color: #64748b;
+        font-size: 1.2rem;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        h1 { font-size: 2rem; }
+       .filters { flex-direction: column; }
+       .filters input,.filters select,.filters button { width: 100%; }
+       .grid { grid-template-columns: 1fr; }
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>🎓 Premium Scholarships 2026</h1>
+    <p class="subtitle">Find the perfect scholarship for your education journey</p>
+
+    <!-- Filters with new course_for dropdown -->
+    <form class="filters" method="GET" action="/scholarship">
+        <input type="text" name="search" placeholder="🔍 Search scholarship..." value="{{ search }}">
+
+        <select name="category">
+            <option value="all" {% if category=='all' %}selected{% endif %}>All Categories</option>
+            <option value="government" {% if category=='government' %}selected{% endif %}>🏛️ Government</option>
+            <option value="girls" {% if category=='girls' %}selected{% endif %}>👩‍🎓 For Girls</option>
+            <option value="merit" {% if category=='merit' %}selected{% endif %}>🏆 Merit Based</option>
+            <option value="special" {% if category=='special' %}selected{% endif %}>♿ Special Category</option>
+            <option value="private" {% if category=='private' %}selected{% endif %}>💎 Private</option>
+        </select>
+
+        <select name="course_for">
+            <option value="all" {% if course_for=='all' %}selected{% endif %}>🎯 Kis liye? Sab</option>
+            <option value="btech" {% if course_for=='btech' %}selected{% endif %}>⚡ B.Tech / Engineering</option>
+            <option value="girls" {% if course_for=='girls' %}selected{% endif %}>👩‍🎓 Sirf Girls</option>
+            <option value="scst" {% if course_for=='scst' %}selected{% endif %}>🏛️ SC/ST/OBC</option>
+            <option value="disabled" {% if course_for=='disabled' %}selected{% endif %}>♿ Disabled Students</option>
+            <option value="merit" {% if course_for=='merit' %}selected{% endif %}>🏆 Topper / Merit</option>
+        </select>
+
+        <button type="submit">Apply Filters</button>
+    </form>
+
+    <!-- Scholarship Cards -->
+    <div class="grid">
+        {% if scholarships %}
+            {% for s in scholarships %}
+            <div class="card">
+                <span class="tag">{{ s[7] }}</span>
+
+                <div class="card-header">
+                    <div class="logo">{{ s[8] }}</div>
+                    <h3>{{ s[1] }}</h3>
+                </div>
+
+                <div class="info-row"><b>Provider:</b> {{ s[2] }}</div>
+                <div class="info-row"><b>Eligibility:</b> {{ s[3] }}</div>
+
+                <div class="amount">{{ s[4] }}</div>
+
+                <div class="deadline">⏰ Last Date: {{ s[5] }}</div>
+
+                <a href="{{ s[6] }}" target="_blank" class="btn">Apply Now →</a>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-data">
+                <h2>😕 No scholarships found</h2>
+                <p>Try changing your filters or search keywords</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+</body>
+</html>
